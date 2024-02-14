@@ -24,7 +24,7 @@ namespace Task_2.Library.Database
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var connString = "Server=.;Database=UserManAltronAssessment;ConnectRetryCount=0;Trusted_Connection=True;MultipleActiveResultSets=true";
+                var connString = "Server=.;Database=UserManAltronAssessment;ConnectRetryCount=0;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
                 optionsBuilder
                     .EnableSensitiveDataLogging(false)
                     .UseSqlServer(connString, options => options.MaxBatchSize(150));

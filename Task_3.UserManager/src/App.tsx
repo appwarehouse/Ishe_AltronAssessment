@@ -2,12 +2,17 @@ import { ChangeEvent, useEffect, useState } from "react";
 import reactLogo from "./assets/react.svg";
 import "./App.css";
 import ResponsiveTable, { ColumnType } from "./components/organisms/Table";
-import { dummyUsers } from "./services/sampleDataService";
 import { Column } from "./interfaces/Column";
-import { deleteUser, updateUser } from "./services/userService";
+import {
+  allUsers,
+  deleteUser,
+  updateUser,
+  createUser,
+} from "./services/sampleDataService";
 import {
   Button,
   Col,
+  Container,
   Modal,
   ModalBody,
   ModalFooter,
@@ -26,13 +31,8 @@ function App() {
     setModal(!modal);
   };
 
-  const handleUserDelete = (value: any) => {
-    const updatedUsers = users?.map((user) => {
-      if (user.userId === value) {
-        return { ...user, isActive: false };
-      }
-      return user;
-    });
+  const handleUserDelete = async (value: any) => {
+    const updatedUsers = await deleteUser(value, users);
 
     setUsers(updatedUsers);
   };
@@ -44,17 +44,16 @@ function App() {
     setSelectedUser(userToEdit);
   };
 
-  const handleUserEdit = (user: DbUser) => {
+  const handleUserEdit = async (user: DbUser) => {
     toggle();
-    const index = users.findIndex((u) => u.userId === user.userId);
-    const updatedUsers = [...users];
-    updatedUsers[index] = user;
+    const updatedUsers = await updateUser(user, users);
     setUsers(updatedUsers);
   };
 
-  const handleUserCreation = (user: DbUser) => {
+  const handleUserCreation = async (user: DbUser) => {
     toggle();
-    setUsers((prevUsers) => [...prevUsers, user]);
+    const updatedUsers = await createUser(user, users);
+    setUsers(updatedUsers);
   };
 
   const columns: Column[] = [
@@ -80,26 +79,34 @@ function App() {
   ];
 
   useEffect(() => {
-    setUsers(dummyUsers);
+    const fetchData = async () => {
+      try {
+        const data = await allUsers();
+        setUsers(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <div className="App">
-      <Row>
-        <Col md="3">
-          <Button
-            block
-            color="success"
-            onClick={() => {
-              setSelectedUser(undefined);
-              setIsEdit(false);
-              toggle();
-            }}
-          >
-            Create User
-          </Button>
-        </Col>
-      </Row>
+    <Container>
+      <Col lg="6">
+        <Button
+          block
+          color="success"
+          onClick={() => {
+            setSelectedUser(undefined);
+            setIsEdit(false);
+            toggle();
+          }}
+        >
+          Create User
+        </Button>
+      </Col>
+
       <ResponsiveTable data={users} columns={columns} />
       <Modal isOpen={modal} toggle={toggle}>
         <ModalHeader toggle={toggle}>
@@ -116,7 +123,7 @@ function App() {
           />
         </ModalBody>
       </Modal>
-    </div>
+    </Container>
   );
 }
 

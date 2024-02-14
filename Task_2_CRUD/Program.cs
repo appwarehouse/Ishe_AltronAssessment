@@ -15,7 +15,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("Default", builder =>
     {  
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); 
+        builder
+        .WithOrigins("http://locathost:3010")
+        .AllowAnyMethod()
+        .AllowAnyHeader(); 
     });
 });
 

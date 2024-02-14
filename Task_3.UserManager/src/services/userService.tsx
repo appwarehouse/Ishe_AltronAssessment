@@ -1,27 +1,67 @@
 import http from "./httpService";
 import config from "./../config/config.json";
+import logService from "./logService";
 
 const apiEndpoint = `${config.apiEndpoint}/UserManagement/`;
 
-export function createUser(user: DbUser) {
-  return http.post(`${apiEndpoint}/Create`, {
-    user,
-  });
+export async function createUser(user: DbUser) {
+  try {
+    const resp = await http.post(`${apiEndpoint}/Create`, {
+      user,
+    });
+    const { status, data } = resp;
+    if (status === 201) return data;
+    return null;
+  } catch (error) {
+    logService.log(error);
+    return null;
+  }
 }
 
 export async function allUsers() {
-  return http.get(`${apiEndpoint}/Users`);
+  try {
+    const resp = await http.get(`${apiEndpoint}/Users`);
+    const { status, data } = resp;
+    if (status === 200) return data;
+    return [];
+  } catch (error) {
+    logService.log(error);
+    return [];
+  }
 }
 
 export async function getUser(userId: string) {
-  var { data } = await http.get(`${apiEndpoint}/User/${userId}`);
-  return data;
+  try {
+    const resp = await http.get(`${apiEndpoint}/User/${userId}`);
+    const { status, data } = resp;
+    if (status === 200) return data;
+    return null;
+  } catch (error) {
+    logService.log(error);
+    return null;
+  }
 }
 
 export async function updateUser(userId: string, user: DbUser) {
-  return http.put(`${apiEndpoint}/Update/${userId}`, user);
+  try {
+    const resp = await http.put(`${apiEndpoint}/Update/${userId}`, user);
+    const { status, data } = resp;
+    if (status === 200) return data;
+    return null;
+  } catch (error) {
+    logService.log(error);
+    return null;
+  }
 }
 
 export async function deleteUser(userId: string) {
-  return http.delete(`${apiEndpoint}/Delete/${userId}`);
+  try {
+    const resp = await http.delete(`${apiEndpoint}/Delete/${userId}`);
+    const { status, data } = resp;
+    if (status === 204) return data;
+    return null;
+  } catch (error) {
+    logService.log(error);
+    return null;
+  }
 }

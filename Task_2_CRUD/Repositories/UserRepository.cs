@@ -26,7 +26,7 @@ namespace Task_2_CRUD.Repositories
             _context.Users.Remove(entity);
         }
 
-        public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await _context.Users.FindAsync(id, cancellationToken);
         }
@@ -36,9 +36,12 @@ namespace Task_2_CRUD.Repositories
             return await _context.Users.ToListAsync(cancellationToken);
         }
 
-        public void Update(User entity)
+        public void Update(User existingEntity, User updatedEntity)
         {
-            _context.Users.Update(entity);
+            if (existingEntity != null)
+            {
+                _context.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
+            }
         }
     }
 }

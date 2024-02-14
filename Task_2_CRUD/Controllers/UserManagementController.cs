@@ -15,40 +15,59 @@ namespace Task_2_CRUD.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        // GET: api/<UserManagementController>
+
         [HttpGet("Users")]
         public async Task<ActionResult<ICollection<User>>> Get()
         {
             var users = await _unitOfWork.UserRepository.ListAsync();
-            return users.ToList();
+            return Ok(users.ToList());
         }
 
-        // GET api/<UserManagementController>/5
         [HttpGet("User/{id}")]
-        public async Task<ActionResult<User>> Get(int id)
+        public async Task<ActionResult<User>> Get(Guid id)
         {
-            return new User();
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
         }
 
-        // POST api/<UserManagementController>
         [HttpPost("Create")]
         public async Task<ActionResult<User>> Post([FromBody] User user)
         {
-            return new User();
+            await _unitOfWork.UserRepository.CreateAsync(user);
+            await _unitOfWork.SaveChangesAsync();
+            return CreatedAtAction(nameof(Get), new { id = user.UserId }, user);
         }
 
-        // PUT api/<UserManagementController>/5
         [HttpPut("Update/{id}")]
-        public async Task<ActionResult<User>> Put(int id, [FromBody] User user)
+        public async Task<ActionResult<User>> Put(Guid id, [FromBody] User user)
         {
-            return user;
+            if (id != user.UserId)
+                return BadRequest();
+           
+            var existingUser = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            if (existingUser == null)           
+                return NotFound();
+
+
+            _unitOfWork.UserRepository.Update(existingUser, user);
+            await _unitOfWork.SaveChangesAsync();
+            return Ok(user);
+
         }
 
-        // DELETE api/<UserManagementController>/5
         [HttpDelete("Delete/{id}")]
-        public async Task<ActionResult<bool>> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(Guid id)
         {
-            return false;
+            var user = await _unitOfWork.UserRepository.GetByIdAsync(id);
+            if (user == null) return NotFound();
+
+            _unitOfWork.UserRepository.Delete(user);
+            await _unitOfWork.SaveChangesAsync();
+            return NoContent();
         }
     }
 }

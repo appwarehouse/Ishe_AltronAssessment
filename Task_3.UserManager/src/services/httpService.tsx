@@ -1,5 +1,10 @@
 import axios from "axios";
 import logger from "./logService";
+import config from "./../config/config.json";
+
+const instance = axios.create({
+  baseURL: config.apiEndpoint,
+});
 
 axios.interceptors.response.use(null, (error) => {
   const expectedError =
@@ -15,8 +20,8 @@ axios.interceptors.response.use(null, (error) => {
 });
 
 export default {
-  get: axios.get,
-  post: axios.post,
-  put: axios.put,
-  delete: axios.delete,
+  get: instance.get,
+  post: instance.post,
+  put: instance.put,
+  delete: instance.delete,
 };
