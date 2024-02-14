@@ -16,7 +16,6 @@ namespace Task_1.Migrations
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -30,17 +29,11 @@ namespace Task_1.Migrations
                 {
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: true)
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.CategoryId);
-                    table.ForeignKey(
-                        name: "FK_Categories_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId");
                 });
 
             migrationBuilder.CreateTable(
@@ -62,11 +55,6 @@ namespace Task_1.Migrations
                         principalColumn: "CategoryId",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_ProductId",
-                table: "Categories",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SubCategories_CategoryId",

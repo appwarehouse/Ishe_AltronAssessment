@@ -35,7 +35,6 @@ namespace Task_1.Database
                 .HasKey(nameof(ProductCategory.ProductId), nameof(ProductCategory.CategoryId));
         }
 
-
     }
 }
 

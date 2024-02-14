@@ -34,12 +34,7 @@ namespace Task_1.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
-                        .HasColumnType("int");
-
                     b.HasKey("CategoryId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("Categories");
                 });
@@ -51,9 +46,6 @@ namespace Task_1.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
@@ -104,8 +96,7 @@ namespace Task_1.Migrations
             modelBuilder.Entity("Task_1.Category", b =>
                 {
                     b.HasOne("Task_1.Product", null)
-                        .WithMany("Category")
-                        .HasForeignKey("ProductId");
+                        .WithMany("Category");
                 });
 
             modelBuilder.Entity("Task_1.ProductCategory", b =>

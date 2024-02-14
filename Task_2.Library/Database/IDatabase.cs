@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Task_1.Database
+namespace Task_2.Library.Database
 {
     public interface IDatabase
     {
